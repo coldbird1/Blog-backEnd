@@ -112,7 +112,7 @@ router.put('/_token/delete', async (req, res) => {
 //分页
 router.get('/list', async (req, res) => {
 
-  const sql = "SELECT * FROM `category`"
+  const sql = "SELECT * FROM `blog`"
   let { err, rows } = await db.async.all(sql, [])
   console.log(rows);
   if (err == null) {
