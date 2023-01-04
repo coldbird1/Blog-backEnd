@@ -88,9 +88,9 @@ router.put('/_token/update', async (req, res) => {
 })
 
 //删除
-router.put('/_token/delete', async (req, res) => {
+router.delete('/_token/delete', async (req, res) => {
 
-  const id = req.query.id
+  const ids = req.body.id
 
   const sql = "DELETE FROM `blog` WHERE id = ?"
   let { err, rows } = await db.async.run(sql, [id])
