@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const { v4: uuidv4 } = require("uuid")
 const { db, genid } = require("../db/DbUtils")
+var dayjs = require('dayjs');
 
 router.post("/login", async (req, res) => {
 
@@ -21,7 +22,13 @@ router.post("/login", async (req, res) => {
     admin_info.token = login_token
     delete admin_info.password
 
+    admin_info.expires = new Date().getTime() + 3600 * 24 * 7
 
+    console.log({
+      code: 200,
+      msg: "登陆成功",
+      data: admin_info
+    });
     res.send({
       code: 200,
       msg: "登陆成功",

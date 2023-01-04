@@ -2,14 +2,15 @@ const express = require("express")
 const router = express.Router()
 const { v4: uuidv4 } = require("uuid")
 const { db, genid } = require("../db/DbUtils")
-
+var dayjs = require('dayjs');
 
 //添加
 router.post('/_token/add', async (req, res) => {
 
   const { title, category_id, content } = req.body
   let id = genid.NextId()
-  let create_time = new Date().getTime()
+  let create_time = dayjs().format();
+
 
   const sql = "INSERT INTO `blog` (id,title,category_id,content,create_time) VALUES (?,?,?,?,?)"
   let { err, rows } = await db.async.run(sql, [id, title, category_id, content, create_time])
@@ -163,12 +164,12 @@ router.get('/search', async (req, res) => {
 
   let pageParams = [(page - 1) * pageSize, pageSize]
   let sqlParams = [...params, ...pageParams]
-  let sql = 'SELECT * FROM `blog`' + whereSqlStr + 'ORDER BY `create_time` DESC ' + ` limit ?,? `
+  let sql = ' SELECT b.*,c.name category_name FROM blog b LEFT JOIN category c ON b.category_id = c.id ' + whereSqlStr + 'ORDER BY `create_time` DESC ' + ` limit ?,? `
 
-  // console.log('sql', sql);
+  console.log('sql', sql);
   // console.log('sqlParams', sqlParams);
   let searchRes = await db.async.all(sql, sqlParams)
-
+  console.log('searchRes', searchRes);
   const countSql = 'SELECT COUNT(*) FROM `blog` ' + whereSqlStr
   // console.log('countSql', countSql);
   // console.log('params', params);
