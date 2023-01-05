@@ -91,9 +91,11 @@ router.put('/_token/update', async (req, res) => {
 router.delete('/_token/delete', async (req, res) => {
 
   const { ids } = req.body
-  const idsStr = ids.join(',')
-  const sql = "DELETE FROM `blog` WHERE id in (?)"
-  let { err, rows } = await db.async.run(sql, [idsStr])
+  const idsStr = '(' + ids.join(',') + ')'
+
+  const sql = "DELETE FROM `blog` WHERE `id` IN " + idsStr
+  // console.log(sql);
+  let { err, rows } = await db.async.run(sql, [])
 
   if (err == null) {
     res.send({

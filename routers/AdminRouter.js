@@ -22,7 +22,7 @@ router.post("/login", async (req, res) => {
     admin_info.token = login_token
     delete admin_info.password
 
-    admin_info.expires = new Date().getTime() + 3600 * 24 * 7
+    admin_info.expires = new Date().getTime() + 3600 * 2 * 1000 //token过期时间两小时
 
     console.log({
       code: 200,

@@ -50,12 +50,14 @@ router.put('/_token/update', async (req, res) => {
 })
 
 //删除
-router.put('/_token/delete', async (req, res) => {
+router.delete('/_token/delete', async (req, res) => {
 
-  const id = req.query.id
+  const { ids } = req.body
+  const idsStr = '(' + ids.join(',') + ')'
 
-  const sql = "DELETE FROM `category` WHERE id = ?"
-  let { err, rows } = await db.async.run(sql, [id])
+  const sql = "DELETE FROM `category` WHERE `id` IN " + idsStr
+  // console.log(sql);
+  let { err, rows } = await db.async.run(sql, [])
 
   if (err == null) {
     res.send({
