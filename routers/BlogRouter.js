@@ -7,13 +7,11 @@ var dayjs = require('dayjs');
 //添加
 router.post('/_token/add', async (req, res) => {
 
-  const { title, category_id, content } = req.body
+  const { title, category_id, content, author } = req.body
   let id = genid.NextId()
-  let create_time = dayjs().format();
-
-
-  const sql = "INSERT INTO `blog` (id,title,category_id,content,create_time) VALUES (?,?,?,?,?)"
-  let { err, rows } = await db.async.run(sql, [id, title, category_id, content, create_time])
+  let create_time = dayjs().format('YYYY-MM-DD HH:mm:ss');
+  const sql = "INSERT INTO `blog` (id,title,category_id,content,create_time,author) VALUES (?,?,?,?,?,?)"
+  let { err, rows } = await db.async.run(sql, [id, title, category_id, content, create_time, author])
 
   if (err == null) {
     res.send({
