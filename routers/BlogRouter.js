@@ -139,8 +139,9 @@ router.get('/list', async (req, res) => {
  * pageSize 每页长度
  */
 router.get('/search', async (req, res) => {
-  let { keyword, category_id, page, pageSize } = req.query
 
+  let { keyword, category_id, page, pageSize } = req.query
+  console.log('pageSize', pageSize);
   keyword = keyword ?? ""
   category_id = category_id ?? 0
   page = page ?? 1
@@ -175,6 +176,9 @@ router.get('/search', async (req, res) => {
   // console.log('params', params);
   let countRes = await db.async.all(countSql, params)
   // console.log('countRes', countRes);
+  let count = countRes.rows[0]['COUNT(*)']
+  let pageCount = Math.ceil(count / pageSize)
+
   if (searchRes.err == null && countRes.err == null) {
     res.send({
       code: 200,
@@ -182,7 +186,8 @@ router.get('/search', async (req, res) => {
       data: searchRes.rows,
       page,
       pageSize,
-      count: countRes.rows[0]['COUNT(*)']
+      count,
+      pageCount
     })
   } else {
     console.log(searchRes.err);

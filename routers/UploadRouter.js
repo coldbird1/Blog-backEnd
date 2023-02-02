@@ -27,6 +27,8 @@ router.post("/rich_editor_upload", async (req, res) => {
     ret_files.push("/upload/" + file_name)
   }
 
+  console.log('url', ret_files[0]);
+
   res.send({
     "errno": 0,
     "data": {
