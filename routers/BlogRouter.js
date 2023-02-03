@@ -140,12 +140,16 @@ router.get('/list', async (req, res) => {
  */
 router.get('/search', async (req, res) => {
 
-  let { keyword, category_id, page, pageSize } = req.query
+  let { keyword, category_id, page, pageSize, columnKey, order } = req.query
   console.log('pageSize', pageSize);
   keyword = keyword ?? ""
   category_id = category_id ?? 0
   page = page ?? 1
   pageSize = pageSize ?? 10
+  columnKey = columnKey ?? 'create_time'
+  order = order ?? 'ASC'
+
+  console.log('-----------------category_id--------------------', category_id);
 
   let params = []
   let whereSql = []
@@ -156,7 +160,7 @@ router.get('/search', async (req, res) => {
     params.push(`%${keyword}%`)
   }
 
-  if (category_id) {
+  if (Number(category_id)) {
     whereSql.push(' `category_id`=? ')
     params.push(category_id)
   }
@@ -165,8 +169,9 @@ router.get('/search', async (req, res) => {
 
   let pageParams = [(page - 1) * pageSize, pageSize]
   let sqlParams = [...params, ...pageParams]
-  let sql = ' SELECT b.*,c.name category_name FROM blog b LEFT JOIN category c ON b.category_id = c.id ' + whereSqlStr + 'ORDER BY `create_time` DESC ' + ` limit ?,? `
+  let sql = ' SELECT b.*,c.name category_name FROM blog b LEFT JOIN category c ON b.category_id = c.id ' + whereSqlStr + ' ORDER BY ' + ` ${columnKey} ${order} ` + ' limit ?,? '
 
+  console.log('sqlParams', sqlParams);
   console.log('sql', sql);
   // console.log('sqlParams', sqlParams);
   let searchRes = await db.async.all(sql, sqlParams)

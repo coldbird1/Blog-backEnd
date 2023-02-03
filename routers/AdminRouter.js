@@ -43,4 +43,25 @@ router.post("/login", async (req, res) => {
 
 })
 
+router.get('/list', async (req, res) => {
+
+  const sql = "SELECT * FROM `admin`"
+  let { err, rows } = await db.async.all(sql, [])
+  console.log(rows);
+  if (err == null) {
+    res.send({
+      code: 200,
+      msg: '查询成功',
+      data: rows
+    })
+  } else {
+    console.log(err);
+    res.send({
+      code: 500,
+      msg: '查询失败',
+    })
+  }
+})
+
+
 module.exports = router
