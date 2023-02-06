@@ -43,9 +43,10 @@ router.post("/login", async (req, res) => {
 
 })
 
+//分页
 router.get('/list', async (req, res) => {
 
-  const sql = "SELECT * FROM `admin`"
+  const sql = "SELECT `id`,`account`,`userName` FROM `admin`"
   let { err, rows } = await db.async.all(sql, [])
   console.log(rows);
   if (err == null) {
@@ -59,6 +60,63 @@ router.get('/list', async (req, res) => {
     res.send({
       code: 500,
       msg: '查询失败',
+    })
+  }
+})
+
+//新增用户
+router.post('/add', async (req, res) => {
+  let id = genid.NextId()
+  let { account, password, userName } = req.body
+  userName = userName ? userName : account
+  console.log(req.body);
+  //先查询用户名是否存在
+  const ssql = "SELECT `id`,`account`,`userName` FROM `admin` where `account`=?"
+  let { err: serr, rows: srows } = await db.async.all(ssql, [account])
+  if (serr !== null || srows.length > 0) {
+    res.send({
+      code: 500,
+      msg: '该用户名已存在',
+    })
+    return false
+  }
+
+  const sql = "INSERT INTO `admin` (id,account,password,userName) VALUES (?,?,?,?)"
+  let { err, rows } = await db.async.run(sql, [id, account, password, userName])
+
+  if (err == null) {
+    res.send({
+      code: 200,
+      msg: '添加成功',
+      data: {}
+    })
+  } else {
+    res.send({
+      code: 500,
+      msg: '添加失败',
+    })
+  }
+})
+
+//修改密码
+router.put('/_token/update', async (req, res) => {
+  console.log(11111111111111111);
+  const { id, password } = req.body
+
+  const sql = "UPDATE `admin` SET `password` = ? WHERE id = ?"
+  let { err, rows } = await db.async.run(sql, [password, id])
+
+  if (err == null) {
+    res.send({
+      code: 200,
+      msg: '更新成功',
+      data: rows
+    })
+  } else {
+    console.log(err);
+    res.send({
+      code: 500,
+      msg: '更新失败',
     })
   }
 })

@@ -149,7 +149,6 @@ router.get('/search', async (req, res) => {
   columnKey = columnKey ?? 'create_time'
   order = order ?? 'ASC'
 
-  console.log('-----------------category_id--------------------', category_id);
 
   let params = []
   let whereSql = []
