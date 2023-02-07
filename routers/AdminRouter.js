@@ -121,5 +121,30 @@ router.put('/_token/update', async (req, res) => {
   }
 })
 
+//删除
+router.delete('/_token/delete', async (req, res) => {
+
+  const { ids } = req.body
+  const idsStr = '(' + ids.join(',') + ')'
+
+  const sql = "DELETE FROM `admin` WHERE `id` IN " + idsStr
+  // console.log(sql);
+  let { err, rows } = await db.async.run(sql, [])
+
+  if (err == null) {
+    res.send({
+      code: 200,
+      msg: '删除成功',
+      data: rows
+    })
+  } else {
+    console.log(err);
+    res.send({
+      code: 500,
+      msg: '删除失败',
+    })
+  }
+})
+
 
 module.exports = router
